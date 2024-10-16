@@ -13,6 +13,8 @@
     "next": "14.2.15",
     "react": "^18",
     "react-dom": "^18",
+    "react-speech-recognition": "^3.10.0",
+    "regenerator-runtime": "^0.14.1",
     "tsparticles": "^3.5.0"
   },
   "devDependencies": {

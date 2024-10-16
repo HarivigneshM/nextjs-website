@@ -1,10 +1,12 @@
-import { useState } from "react";
+import 'regenerator-runtime/runtime';
+import { useEffect, useState } from "react";
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 export default function GenerateSite(){
     const [isClicked, setIsClicked] = useState(false);
     const [isChecked, setIsChecked] = useState(true);
     const [showInput, setShowInput] = useState(true);
-
+    const [islistening, setListen] = useState(false);
     const handleClick = () => {
         setShowInput(false);
         setIsClicked(true);
@@ -15,6 +17,26 @@ export default function GenerateSite(){
     const handleCheck = () => {
         setIsChecked(false);
     }
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition
+    } = useSpeechRecognition();
+    
+    const handleListen = async () => {
+        setListen((prevListen) => !prevListen);
+    }
+    useEffect(()=>{
+        console.log(islistening); 
+        console.log(listening, browserSupportsSpeechRecognition);
+        console.log(transcript);
+        if (islistening) {
+            SpeechRecognition.startListening({continuous:true});
+        } else {
+            SpeechRecognition.stopListening();
+        }
+    },[islistening]);
     return(
         <>
         {showInput ? (
@@ -98,29 +120,30 @@ export default function GenerateSite(){
                         >
                             <button
                         className="absolute inset-y-0 flex items-center pe-3"
-                        type="button"
+                        type="button" onClick={handleListen}
                         >
-                        <svg
-                            viewBox="0 0 16 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                            className="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                        >
-                            <path
-                            d="M15 7v3a5.006 5.006 0 0 1-5 5H6a5.006 5.006 0 0 1-5-5V7m7 9v3m-3 0h6M7 1h2a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3Z"
-                            strokeWidth="2"
-                            strokeLinejoin="round"
-                            strokeLinecap="round"
-                            stroke="currentColor"
-                            ></path>
-                        </svg>
-                        </button>
+                                <svg
+                                    viewBox="0 0 16 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
+                                    className="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                >
+                                    <path
+                                    d="M15 7v3a5.006 5.006 0 0 1-5 5H6a5.006 5.006 0 0 1-5-5V7m7 9v3m-3 0h6M7 1h2a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3Z"
+                                    strokeWidth="2"
+                                    strokeLinejoin="round"
+                                    strokeLinecap="round"
+                                    stroke="currentColor"
+                                    ></path>
+                                </svg>
+                            </button>
                         </div>
                         <input
                         required=""
                         placeholder="Enter your prompt..."
                         id="voice-search"
+                        value={transcript}
                         type="text"
                         />
                         <button
